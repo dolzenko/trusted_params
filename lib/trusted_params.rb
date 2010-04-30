@@ -32,7 +32,13 @@ class TrustedParams
   def encrypted_trusted_params_list
     params = @trusted_params.map { |e| e.to_s }
 
-    self.class.encryptor.encrypt_and_sign(Marshal.dump(params))
+    # inject some random numbers so that attacker doesn't know the plaintext
+    # and we can filter them out easily
+    # TODO: is that really needed?
+    salted_params = params + (0..5).map { rand }
+    salted_params.shuffle!
+
+    self.class.encryptor.encrypt_and_sign(Marshal.dump(salted_params))
   end
 
   def self.trusted_params(params)
@@ -42,7 +48,7 @@ class TrustedParams
       return {}
     end
     
-    trusted_list = Marshal.load(encryptor.decrypt_and_verify(params_token))
+    trusted_list = Marshal.load(encryptor.decrypt_and_verify(params_token).reject { |e| e.is_a?(Numeric) })
     sample_trusted_params = Rack::Utils.parse_nested_query(trusted_list.map { |k| "#{ k }=1" }.join("&")) 
 
     remove_untrusted_nested_params(params, sample_trusted_params)

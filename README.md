@@ -1,6 +1,6 @@
 ## TrustedParams
 
-Trust only the params you indeed created inputs for (experimental/half-assed/untested solution
+Trust only the params you indeed created inputs for (**experimental/half-assed/untested** solution
 to the not solved [mass assignment problem](http://groups.google.com/group/rubyonrails-core/browse_thread/thread/3b6818496d0d07f1)).
 
 ### What It Does
@@ -18,6 +18,10 @@ is extracted and available like this:
     params[:post].trusted
 
 Any input/param that wasn't in original form will be removed.
+
+### Installation
+
+    rails plugin install git://github.com/dolzenko/trusted_params.git
 
 ### Pros
 

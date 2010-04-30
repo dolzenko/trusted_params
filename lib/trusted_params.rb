@@ -65,6 +65,10 @@ class TrustedParams
   end
 
   def self.inject_trusted_params_helper(params, trusted)
+    params.define_singleton_method(:trusted) do |*default_trusted_params|
+      trusted[k].merge(v.slice(*default_trusted_params))
+    end
+
     params.each do |k, v|
       if v.is_a?(Hash)
         v.define_singleton_method(:trusted) do |*default_trusted_params|
